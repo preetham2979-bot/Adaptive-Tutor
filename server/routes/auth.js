@@ -10,8 +10,10 @@ const router = Router();
 
 const COOKIE_OPTIONS = {
   httpOnly: true,
-  sameSite: "lax",
-  secure: config.nodeEnv === "production",
+  // SameSite=None + Secure required for cross-domain cookies (Vercel → Render).
+  // SameSite=Lax silently blocks cookies in cross-domain fetch requests.
+  sameSite: config.nodeEnv === "production" ? "none" : "lax",
+  secure:   config.nodeEnv === "production",
   maxAge: 7 * 24 * 60 * 60 * 1000,
 };
 

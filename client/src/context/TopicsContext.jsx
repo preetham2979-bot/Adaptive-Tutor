@@ -12,7 +12,7 @@ export function TopicsProvider({ children }) {
     if (!user) return;
     try {
       const data = await api.topics.list();
-      setTopics(data.topics);
+      setTopics(data?.topics ?? []);
     } catch (_) {}
   }, [user]);
 

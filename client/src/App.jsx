@@ -59,7 +59,11 @@ function MobileBottomNav() {
 function AppShell() {
   const { user, authLoading } = useAuth();
   const isAuth = !authLoading && !!user;
-  if (authLoading) return null;
+  if (authLoading) return (
+    <div className="h-screen flex items-center justify-center bg-abyss">
+      <div className="w-8 h-8 border-2 border-white/10 border-t-indigo-500 rounded-full animate-spin" />
+    </div>
+  );
 
   /* ── Unauthenticated: full-screen auth pages ── */
   if (!isAuth) {
