@@ -1,4 +1,9 @@
-const BASE = '/api';
+// Development: Vite proxies /api → localhost:3001
+// Production: calls Render backend directly
+const IS_DEV = window.location.hostname === 'localhost';
+const BASE = IS_DEV
+  ? '/api'
+  : 'https://adaptive-tutor-api-3qqr.onrender.com/api';
 
 async function request(method, path, body) {
   const res = await fetch(`${BASE}${path}`, {
