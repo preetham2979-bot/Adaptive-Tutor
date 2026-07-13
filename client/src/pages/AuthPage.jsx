@@ -179,12 +179,13 @@ export default function AuthPage({ mode = 'login' }) {
                   <div className="grid grid-cols-3 gap-2">
                     {PROGRAMMING_LANGUAGES.map(l => (
                       <button key={l.value} type="button" onClick={() => setLang(l.value)}
-                        className={`py-2.5 px-3 rounded-xl border text-xs font-mono
-                          transition-all duration-200 flex items-center gap-2
+                        className={`py-2 px-2 rounded-xl border text-[11px] font-mono
+                          transition-all duration-200 flex items-center gap-1.5 truncate
                           ${lang === l.value && !isDSA
                             ? 'bg-indigo-600/20 border-indigo-500/50 text-indigo-200'
                             : 'bg-black/20 border-white/10 text-slate-500 hover:border-white/20 hover:text-slate-300'}`}>
-                        <span>{l.icon}</span><span>{l.label}</span>
+                        <span className="shrink-0">{l.icon}</span>
+                        <span className="truncate">{l.label}</span>
                       </button>
                     ))}
                   </div>
