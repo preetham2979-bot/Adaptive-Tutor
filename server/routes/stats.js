@@ -73,3 +73,31 @@ router.get("/recent", requireAuth, (req, res) => {
 });
 
 export default router;
+
+// Temporary admin view — remove before sharing publicly
+router.get("/admin", requireAuth, (req, res) => {
+  const users = db.prepare(
+    "SELECT id, email, preferred_language, languages, dsa_language, current_level, created_at FROM users"
+  ).all();
+
+  const mastery = db.prepare(`
+    SELECT u.email, t.name as topic, ROUND(m.p_mastery*100) || '%' as mastery
+    FROM student_topic_mastery m
+    JOIN users u ON u.id = m.user_id
+    JOIN topics t ON t.id = m.topic_id
+    ORDER BY u.id, t.id
+  `).all();
+
+  const attempts = db.prepare(`
+    SELECT u.email, t.name as topic,
+           CASE a.correct WHEN 1 THEN 'correct' ELSE 'wrong' END as result,
+           ROUND(a.p_mastery_after*100) || '%' as mastery_after,
+           a.created_at
+    FROM attempts a
+    JOIN users u ON u.id = a.user_id
+    JOIN topics t ON t.id = a.topic_id
+    ORDER BY a.created_at DESC LIMIT 20
+  `).all();
+
+  res.json({ users, mastery, recentAttempts: attempts });
+});
