@@ -148,3 +148,5 @@ function ensureMultiLanguageColumns() {
   }
 }
 ensureMultiLanguageColumns();
+
+export default db;
