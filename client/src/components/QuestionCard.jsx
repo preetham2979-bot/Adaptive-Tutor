@@ -48,6 +48,13 @@ function renderQuestion(text) {
   );
 }
 
+const LANG_LABELS = {
+  javascript: 'JavaScript', python: 'Python',     java: 'Java',
+  cpp: 'C++',               c: 'C',               typescript: 'TypeScript',
+  go: 'Go',                 rust: 'Rust',          ruby: 'Ruby',
+  php: 'PHP',               swift: 'Swift',        kotlin: 'Kotlin',
+};
+
 const DIFF = {
   easy:         'text-emerald-400 bg-emerald-500/10 border-emerald-500/25',
   medium:       'text-amber-400   bg-amber-500/10   border-amber-500/25',
@@ -57,17 +64,30 @@ const DIFF = {
 };
 
 export default function QuestionCard({ question }) {
-  const { topicName, difficulty, question: qText } = question;
+  const { topicName, difficulty, language, question: qText } = question;
   return (
     <div className="glass rounded-xl p-6 animate-scale-in">
-      <div className="flex items-center gap-2 mb-4">
+      {/* Header: topic + difficulty only */}
+      <div className="flex items-center gap-2 mb-4 flex-wrap">
         <span className="text-xs font-mono text-slate-400">{topicName}</span>
         <span className="text-slate-700">·</span>
         <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${DIFF[difficulty] || DIFF.easy}`}>
           {difficulty}
         </span>
       </div>
-      {renderQuestion(qText)}
+
+      {/* Question text with language badge inline */}
+      <div className="flex items-start gap-3">
+        {language && (
+          <span className="shrink-0 mt-0.5 text-[10px] font-mono px-2 py-1 rounded-lg border
+            text-sky-400 bg-sky-500/10 border-sky-500/25 leading-none">
+            {LANG_LABELS[language] || language}
+          </span>
+        )}
+        <div className="flex-1 min-w-0">
+          {renderQuestion(qText)}
+        </div>
+      </div>
     </div>
   );
 }

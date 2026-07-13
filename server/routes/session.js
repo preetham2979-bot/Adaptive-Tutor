@@ -53,6 +53,7 @@ router.get("/next", requireAuth, asyncHandler(async (req, res) => {
       topicSlug: existing.slug,
       topicName: existing.name,
       difficulty: existing.difficulty,
+      language: existing.language ?? 'javascript',
       mastery: existing.mastery,
       question: existing.question,
       options: JSON.parse(existing.options),
@@ -110,10 +111,10 @@ router.get("/next", requireAuth, asyncHandler(async (req, res) => {
   db.prepare("DELETE FROM active_questions WHERE user_id = ?").run(req.user.id);
   db.prepare(`
     INSERT INTO active_questions
-      (user_id, topic_id, difficulty, question, options, correct_option_index, hint, explanation)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      (user_id, topic_id, difficulty, language, question, options, correct_option_index, hint, explanation)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
-    req.user.id, topic.id, difficulty,
+    req.user.id, topic.id, difficulty, rawLanguage,
     generated.question, JSON.stringify(generated.options),
     generated.correctOptionIndex, generated.hint, generated.explanation
   );
@@ -123,6 +124,7 @@ router.get("/next", requireAuth, asyncHandler(async (req, res) => {
     topicSlug: topic.slug,
     topicName: topic.name,
     difficulty,
+    language:  rawLanguage,
     mastery: topic.mastery,
     question: generated.question,
     options:  generated.options,
