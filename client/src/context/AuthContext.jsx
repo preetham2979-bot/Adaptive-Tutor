@@ -9,7 +9,7 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     api.auth.me()
-      .then(setUser)
+      .then(data => { if (data?.id) setUser(data); else setUser(null); })
       .catch(() => setUser(null))
       .finally(() => setAuthLoading(false));
   }, []);
@@ -24,9 +24,9 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const register = async (email, password, preferredLanguage) => {
+  const register = async (email, password, languages, dsaLanguage) => {
     try {
-      const data = await api.auth.register(email, password, preferredLanguage);
+      const data = await api.auth.register(email, password, languages, dsaLanguage);
       setUser(data);
       return null;
     } catch (err) {

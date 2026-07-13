@@ -10,6 +10,27 @@ import { generateQuestion } from "../agent/generateQuestion.js";
 const router = Router();
 
 /**
+ * Maps the stored preferred_language to what the LLM prompt receives.
+ * DSA users get Python with an algorithmic-focus instruction; all other
+ * languages map to their proper display name (e.g. 'cpp' → 'C++').
+ */
+const LANGUAGE_FOR_PROMPT = {
+  javascript: "JavaScript",
+  python:     "Python",
+  java:       "Java",
+  cpp:        "C++",
+  c:          "C",
+  typescript: "TypeScript",
+  go:         "Go",
+  rust:       "Rust",
+  ruby:       "Ruby",
+  swift:      "Swift",
+  kotlin:     "Kotlin",
+  php:        "PHP",
+  dsa:        "Python — this is a DSA (Data Structures & Algorithms) question. Focus on algorithmic correctness, time/space complexity, and problem-solving patterns. Use Python for all code examples.",
+};
+
+/**
  * GET /api/session/next
  *
  * BKT picks the weakest unmastered topic.
@@ -40,7 +61,7 @@ router.get("/next", requireAuth, asyncHandler(async (req, res) => {
   }
 
   const rows = db.prepare(`
-    SELECT t.id, t.slug, t.name, t.description, m.p_mastery as mastery
+    SELECT t.id, t.slug, t.name, t.description, t.topic_set, m.p_mastery as mastery
     FROM topics t
     JOIN student_topic_mastery m ON m.topic_id = t.id
     WHERE m.user_id = ?
@@ -51,8 +72,15 @@ router.get("/next", requireAuth, asyncHandler(async (req, res) => {
   }
 
   const user = db.prepare(
-    "SELECT preferred_language, current_level FROM users WHERE id = ?"
+    "SELECT preferred_language, languages, dsa_language, current_level FROM users WHERE id = ?"
   ).get(req.user.id);
+
+  // Parse user's language list with fallback to preferred_language
+  let userLanguages;
+  try {
+    userLanguages = JSON.parse(user.languages || "[]");
+  } catch { userLanguages = []; }
+  if (!userLanguages.length) userLanguages = [user.preferred_language || "javascript"];
 
   // Avoid giving the same topic back-to-back
   const lastAttempt = db.prepare(
@@ -62,11 +90,21 @@ router.get("/next", requireAuth, asyncHandler(async (req, res) => {
   const topic      = selectNextTopic(rows, lastAttempt?.topic_id ?? null);
   const difficulty = getDifficultyForLevel(user.current_level);
 
+  // For DSA topics use the dedicated dsa_language; for programming topics
+  // rotate randomly through the user's selected language list.
+  let rawLanguage;
+  if (topic.topic_set === "dsa" && user.dsa_language) {
+    rawLanguage = user.dsa_language;
+  } else {
+    rawLanguage = userLanguages[Math.floor(Math.random() * userLanguages.length)];
+  }
+  const language = LANGUAGE_FOR_PROMPT[rawLanguage] ?? rawLanguage;
+
   const generated = await generateQuestion({
     topicName:        topic.name,
     topicDescription: topic.description,
     difficulty,
-    language:         user.preferred_language,
+    language,
   });
 
   db.prepare("DELETE FROM active_questions WHERE user_id = ?").run(req.user.id);

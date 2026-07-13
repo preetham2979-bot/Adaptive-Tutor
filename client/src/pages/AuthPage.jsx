@@ -49,21 +49,51 @@ function EyeIcon({ open }) {
 export default function AuthPage({ mode = 'login' }) {
   const { login, register } = useAuth();
   const navigate = useNavigate();
+
+  // Form state
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
-  const [lang, setLang]         = useState('javascript');
   const [error, setError]       = useState(null);
   const [loading, setLoading]   = useState(false);
+
+  // Multi-language selection
+  const [selectedLanguages, setSelectedLanguages] = useState(['javascript']);
+  const [includeDSA, setIncludeDSA]   = useState(false);
+  const [dsaLanguage, setDsaLanguage] = useState('python');
+
   const isRegister = mode === 'register';
-  const isDSA      = lang === 'dsa';
+
+  const toggleLanguage = (value) => {
+    setSelectedLanguages(prev => {
+      if (prev.includes(value)) {
+        // Don't allow deselecting the last language
+        if (prev.length === 1) return prev;
+        return prev.filter(l => l !== value);
+      }
+      return [...prev, value];
+    });
+  };
+
+  const handleToggleDSA = () => {
+    if (!includeDSA && selectedLanguages.length > 0) {
+      setDsaLanguage(selectedLanguages[0]);
+    }
+    setIncludeDSA(v => !v);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+
+    if (isRegister && selectedLanguages.length === 0) {
+      setError('Please select at least one programming language.');
+      return;
+    }
+
     setLoading(true);
     const err = isRegister
-      ? await register(email, password, lang)
+      ? await register(email, password, selectedLanguages, includeDSA ? dsaLanguage : null)
       : await login(email, password);
     setLoading(false);
     if (err) setError(err);
@@ -108,6 +138,7 @@ export default function AuthPage({ mode = 'login' }) {
       <div className="flex-1 flex items-center justify-center px-6 relative z-10 overflow-y-auto py-8">
         <div className="w-full max-w-lg">
           <div className="glass-strong rounded-2xl p-8">
+
             {/* Tabs */}
             <div className="flex gap-1 bg-black/20 rounded-xl p-1 mb-7">
               {[{to:'/login',label:'Log in'},{to:'/register',label:'Register'}].map(({to,label}) => (
@@ -151,43 +182,97 @@ export default function AuthPage({ mode = 'login' }) {
                 </div>
               </div>
 
-              {/* Subject / language — register only */}
+              {/* Language selection — register only */}
               {isRegister && (
-                <div>
-                  <label className="block text-xs font-mono text-slate-500 mb-3">Choose your subject</label>
+                <div className="space-y-4">
 
-                  <button type="button" onClick={() => setLang('dsa')}
-                    className={`w-full mb-3 px-4 py-3 rounded-xl border text-sm font-mono
-                      transition-all duration-200 flex items-center gap-3
-                      ${isDSA
-                        ? 'bg-violet-600/20 border-violet-500/50 text-violet-200'
-                        : 'bg-black/20 border-white/10 text-slate-400 hover:border-white/20 hover:text-slate-300'}`}>
-                    <span className="text-xl">🧩</span>
-                    <div className="text-left">
-                      <p className="font-semibold">Data Structures & Algorithms</p>
-                      <p className="text-[11px] opacity-70 mt-0.5">Arrays, trees, graphs, DP, sorting</p>
+                  {/* Programming languages — multi-select */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="text-xs font-mono text-slate-500">
+                        Programming languages
+                      </label>
+                      <span className="text-[10px] font-mono text-indigo-400">
+                        {selectedLanguages.length} selected
+                      </span>
                     </div>
-                    {isDSA && <span className="ml-auto text-violet-400">✓</span>}
-                  </button>
-
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="flex-1 h-px bg-white/[0.06]" />
-                    <span className="text-[10px] font-mono text-slate-600">or pick a language</span>
-                    <div className="flex-1 h-px bg-white/[0.06]" />
+                    <div className="grid grid-cols-3 gap-1.5">
+                      {PROGRAMMING_LANGUAGES.map(l => {
+                        const isSelected = selectedLanguages.includes(l.value);
+                        return (
+                          <button key={l.value} type="button"
+                            onClick={() => toggleLanguage(l.value)}
+                            className={`py-2 px-2 rounded-xl border text-[11px] font-mono
+                              transition-all duration-150 flex items-center gap-1.5 truncate relative
+                              ${isSelected
+                                ? 'bg-indigo-600/20 border-indigo-500/50 text-indigo-200'
+                                : 'bg-black/20 border-white/10 text-slate-500 hover:border-white/20 hover:text-slate-300'}`}>
+                            <span className="shrink-0">{l.icon}</span>
+                            <span className="truncate">{l.label}</span>
+                            {isSelected && (
+                              <span className="ml-auto shrink-0 text-indigo-400 text-[10px]">✓</span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {selectedLanguages.length > 1 && (
+                      <p className="text-[10px] font-mono text-slate-600 mt-1.5">
+                        Questions will rotate between your selected languages
+                      </p>
+                    )}
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2">
-                    {PROGRAMMING_LANGUAGES.map(l => (
-                      <button key={l.value} type="button" onClick={() => setLang(l.value)}
-                        className={`py-2 px-2 rounded-xl border text-[11px] font-mono
-                          transition-all duration-200 flex items-center gap-1.5 truncate
-                          ${lang === l.value && !isDSA
-                            ? 'bg-indigo-600/20 border-indigo-500/50 text-indigo-200'
-                            : 'bg-black/20 border-white/10 text-slate-500 hover:border-white/20 hover:text-slate-300'}`}>
-                        <span className="shrink-0">{l.icon}</span>
-                        <span className="truncate">{l.label}</span>
-                      </button>
-                    ))}
+                  {/* DSA toggle */}
+                  <div>
+                    <button type="button" onClick={handleToggleDSA}
+                      className={`w-full px-4 py-3 rounded-xl border text-sm font-mono
+                        transition-all duration-200 flex items-center gap-3
+                        ${includeDSA
+                          ? 'bg-violet-600/20 border-violet-500/50 text-violet-200'
+                          : 'bg-black/20 border-white/10 text-slate-400 hover:border-white/20 hover:text-slate-300'}`}>
+                      <span className="text-xl">🧩</span>
+                      <div className="text-left flex-1">
+                        <p className="font-semibold text-sm">
+                          Include DSA topics
+                        </p>
+                        <p className="text-[11px] opacity-70 mt-0.5">
+                          Arrays, trees, graphs, DP, sorting
+                        </p>
+                      </div>
+                      {includeDSA && <span className="text-violet-400">✓</span>}
+                    </button>
+
+                    {/* DSA language selector */}
+                    {includeDSA && (
+                      <div className="mt-2 glass rounded-xl p-4 border border-violet-500/20">
+                        <p className="text-xs font-mono text-slate-400 mb-3">
+                          Show DSA examples in a different language?
+                        </p>
+                        <div className="grid grid-cols-3 gap-1.5">
+                          {PROGRAMMING_LANGUAGES.map(l => (
+                            <button key={l.value} type="button"
+                              onClick={() => setDsaLanguage(l.value)}
+                              className={`py-2 px-2 rounded-xl border text-[11px] font-mono
+                                transition-all duration-150 flex items-center gap-1.5 truncate
+                                ${dsaLanguage === l.value
+                                  ? 'bg-violet-600/20 border-violet-500/50 text-violet-200'
+                                  : 'bg-black/20 border-white/10 text-slate-500 hover:border-white/20 hover:text-slate-300'}`}>
+                              <span className="shrink-0">{l.icon}</span>
+                              <span className="truncate">{l.label}</span>
+                              {dsaLanguage === l.value && (
+                                <span className="ml-auto shrink-0 text-violet-400 text-[10px]">✓</span>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                        <p className="text-[10px] font-mono text-slate-600 mt-2">
+                          DSA questions will use <span className="text-violet-400">
+                            {PROGRAMMING_LANGUAGES.find(l => l.value === dsaLanguage)?.label}
+                          </span> for code examples
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
