@@ -133,48 +133,6 @@ removeLanguageCheckConstraint();
  * languages    — JSON array of selected programming languages e.g. '["python","javascript"]'
  * dsa_language — language to use for DSA question examples, NULL if no DSA
  */
-function ensureMultiLanguageColumns() {
-  const cols = db.prepare("PRAGMA table_info(users)").all().map(c => c.name);
-
-  if (!cols.includes("languages")) {
-    db.exec("ALTER TABLE users ADD COLUMN languages TEXT NOT NULL DEFAULT '[]'");
-    // Migrate existing users: wrap their preferred_language into a JSON array
-    db.exec(`
-      UPDATE users SET languages =
-        CASE
-          WHEN preferred_language = 'dsa' THEN '["python"]'
-          ELSE '["' || preferred_language || '"]'
-        END
-    `);
-    console.log("Migrated: added users.languages column.");
-  }
-
-  if (!cols.includes("dsa_language")) {
-    db.exec("ALTER TABLE users ADD COLUMN dsa_language TEXT");
-    // Migrate existing DSA users: they were dsa-only, set dsa_language to python
-    db.exec(`
-      UPDATE users SET dsa_language = 'python'
-      WHERE preferred_language = 'dsa'
-    `);
-    console.log("Migrated: added users.dsa_language column.");
-  }
-}
-ensureMultiLanguageColumns();
-
-function ensureMultiLanguageColumns() {
-  const cols = db.prepare("PRAGMA table_info(users)").all().map(c => c.name);
-  if (!cols.includes("languages")) {
-    db.exec("ALTER TABLE users ADD COLUMN languages TEXT NOT NULL DEFAULT '[]'");
-    db.exec("UPDATE users SET languages = CASE WHEN preferred_language = 'dsa' THEN '[\"python\"]' ELSE '[\"' || preferred_language || '\"]' END");
-    console.log("Migrated: added users.languages column.");
-  }
-  if (!cols.includes("dsa_language")) {
-    db.exec("ALTER TABLE users ADD COLUMN dsa_language TEXT");
-    db.exec("UPDATE users SET dsa_language = 'python' WHERE preferred_language = 'dsa'");
-    console.log("Migrated: added users.dsa_language column.");
-  }
-}
-ensureMultiLanguageColumns();
 
 function ensureMultiLanguageColumns() {
   const cols = db.prepare("PRAGMA table_info(users)").all().map(c => c.name);
