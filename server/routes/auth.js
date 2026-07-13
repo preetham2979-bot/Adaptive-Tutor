@@ -16,11 +16,7 @@ const COOKIE_OPTIONS = {
 };
 
 // All valid programming languages (DSA is handled separately)
-const VALID_LANGUAGES = [
-  "javascript", "python", "java", "cpp", "c",
-  "typescript", "go", "rust", "ruby", "swift",
-  "kotlin", "php",
-];
+const VALID_LANGUAGES = ["javascript","python","java","cpp","c","typescript","go","rust","ruby","swift","kotlin","php"];
 
 function initMasteryForUser(userId, includeProgramming, includeDSA) {
   const insertMastery = db.prepare(
@@ -146,3 +142,5 @@ router.get("/me", requireAuth, (req, res) => {
 });
 
 export default router;
+
+
