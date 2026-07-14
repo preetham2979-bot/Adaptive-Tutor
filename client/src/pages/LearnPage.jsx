@@ -134,16 +134,14 @@ export default function LearnPage() {
               </div>
             </div>
             {/* Level progress pips */}
-            <div className="flex gap-1.5">
+            <div className="flex gap-1.5 items-center">
               {[1,2,3,4,5].map(n => (
                 <div key={n}
-                  className={`flex-1 h-1.5 rounded-full transition-all duration-500
-                    ${n < currentLevel  ? 'bg-indigo-500/40'  : ''}
-                    ${n === currentLevel ? 'bg-indigo-400'     : ''}
-                    ${n > currentLevel  ? 'bg-white/[0.06]'   : ''}`}
+                  className={`flex-1 rounded-full transition-all duration-500
+                    ${n < currentLevel  ? 'h-1.5 bg-indigo-500/40' : ''}
+                    ${n === currentLevel ? 'h-2.5 bg-white'         : ''}
+                    ${n > currentLevel  ? 'h-1.5 bg-white/[0.08]'  : ''}`}
                 />
-              ))}
-            </div>
               ))}
             </div>
             {/* Streak indicator */}
