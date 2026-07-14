@@ -172,6 +172,8 @@ Difficulty specification for this question:
 - Wrong options: ${spec.wrongOptions}
 - Example style: ${spec.example}
 
+CRITICAL RULE: If the question asks about what a function, method, or code snippet returns or does, you MUST include the actual function/code in the question text. Never say "the function" or "this code" without showing it. Use \\n for line breaks to embed the code directly in the question.
+
 Generate exactly one question at ${difficulty.toUpperCase()} difficulty. Follow the specification above precisely — the difficulty must be clearly distinct from easier levels.
 
 Final check before returning: options[correctOptionIndex] must equal the correct answer.`;
