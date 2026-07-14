@@ -137,10 +137,13 @@ export default function LearnPage() {
             <div className="flex gap-1.5">
               {[1,2,3,4,5].map(n => (
                 <div key={n}
-                  className={`flex-1 h-1 rounded-full transition-all duration-500
-                    ${n <= currentLevel ? levelCfg.bg.replace('bg-', 'bg-').replace('/10', '/80') : 'bg-white/[0.06]'}`}
-                  style={n <= currentLevel ? { backgroundColor: n === currentLevel ? undefined : 'rgba(99,102,241,0.3)' } : {}}
+                  className={`flex-1 h-1.5 rounded-full transition-all duration-500
+                    ${n < currentLevel  ? 'bg-indigo-500/40'  : ''}
+                    ${n === currentLevel ? 'bg-indigo-400'     : ''}
+                    ${n > currentLevel  ? 'bg-white/[0.06]'   : ''}`}
                 />
+              ))}
+            </div>
               ))}
             </div>
             {/* Streak indicator */}
