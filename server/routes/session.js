@@ -165,11 +165,12 @@ router.post("/answer", requireAuth, (req, res) => {
 
   const correct        = selectedOptionIndex === active.correct_option_index;
   const pMasteryBefore = masteryRow.p_mastery;
-  const pMasteryAfter  = updateMastery(pMasteryBefore, correct, {
-    pTransit: topic.p_transit,
-    pGuess:   topic.p_guess,
-    pSlip:    topic.p_slip,
-  });
+
+  // Simple fixed-delta mastery: +5% for correct, -5% for wrong, clamped 0–100%
+  const DELTA = 0.05;
+  const pMasteryAfter = correct
+    ? Math.min(1, pMasteryBefore + DELTA)
+    : Math.max(0, pMasteryBefore - DELTA);
 
   // Update mastery
   db.prepare(`
