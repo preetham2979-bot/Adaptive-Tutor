@@ -77,9 +77,9 @@ export default function Sidebar() {
     <aside className="glass-sidebar w-60 shrink-0 flex flex-col h-full z-10">
       {/* Logo */}
       <div className="px-5 py-5 border-b border-white/[0.06]">
-        <span className="font-mono font-semibold text-base text-white">
-          <span className="text-indigo-400">AT</span>
-          <span className="text-slate-400 font-normal ml-2 text-sm">Adaptive Tutor</span>
+        <span className="font-mono font-bold text-lg text-white tracking-wide">
+          <span className="text-indigo-400">Adaptive</span>
+          <span className="text-white ml-1.5">Tutor</span>
         </span>
       </div>
 

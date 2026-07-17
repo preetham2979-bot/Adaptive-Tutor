@@ -22,9 +22,9 @@ function MobileTopBar() {
   return (
     <header className="lg:hidden flex items-center justify-between px-4 h-12 shrink-0
       bg-abyss/80 backdrop-blur-md border-b border-white/[0.06]">
-      <span className="font-mono font-semibold text-sm">
+      <span className="font-mono font-bold text-base">
         <span className="text-indigo-400">Adaptive</span>
-        <span className="text-white ml-1">Tutor</span>
+        <span className="text-white ml-1.5">Tutor</span>
       </span>
       <button onClick={handleLogout}
         className="text-xs font-mono text-slate-600 hover:text-red-400 transition-colors">
