@@ -10,7 +10,7 @@ export default {
         border:  'rgba(255,255,255,0.08)',
       },
       fontFamily: {
-        sans: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+        sans: ['"Apple Garamond"', 'Georgia', 'serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
     },
