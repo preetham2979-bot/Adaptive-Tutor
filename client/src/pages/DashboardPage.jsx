@@ -136,16 +136,32 @@ export default function DashboardPage() {
           <RecentAttemptsFeed />
         </div>
 
-        {/* Topic grid — clickable */}
-        <div className="lg:col-span-3">
-          <p className="text-[10px] font-mono text-slate-600 uppercase tracking-widest mb-3">
-            All Topics — Click to Explore
-          </p>
-          <div className="grid grid-cols-2 xl:grid-cols-3 gap-2.5">
-            {topics.map(t => (
-              <TopicCard key={t.id} topic={t} onClick={() => setSelectedId(t.id)} />
-            ))}
-          </div>
+        {/* Topic grid — grouped by language */}
+        <div className="lg:col-span-3 space-y-5">
+          {(() => {
+            const LANG_LABELS = {
+              javascript:'JavaScript', python:'Python', java:'Java',
+              cpp:'C++', c:'C', typescript:'TypeScript', go:'Go',
+              rust:'Rust', ruby:'Ruby', php:'PHP', swift:'Swift', kotlin:'Kotlin',
+            };
+            const progTopics = topics.filter(t => t.topicSet === 'programming');
+            const dsaTopics  = topics.filter(t => t.topicSet === 'dsa');
+            const groups = [];
+            if (progTopics.length) groups.push({ label: 'Programming Topics', topics: progTopics });
+            if (dsaTopics.length)  groups.push({ label: 'DSA Topics', topics: dsaTopics });
+            return groups.map(({ label, topics: grp }) => (
+              <div key={label}>
+                <p className="text-[10px] font-mono text-slate-600 uppercase tracking-widest mb-3">
+                  {label} — Click to Explore
+                </p>
+                <div className="grid grid-cols-2 xl:grid-cols-3 gap-2.5">
+                  {grp.map(t => (
+                    <TopicCard key={t.id} topic={t} onClick={() => setSelectedId(t.id)} />
+                  ))}
+                </div>
+              </div>
+            ));
+          })()}
         </div>
       </div>
 

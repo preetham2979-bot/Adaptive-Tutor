@@ -3,6 +3,13 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { useTopics } from '../context/TopicsContext.jsx';
 import { getLevelConfig } from '../config/levels.js';
 
+const LANG_LABELS = {
+  javascript: 'JavaScript', python: 'Python',     java: 'Java',
+  cpp: 'C++',               c: 'C',               typescript: 'TypeScript',
+  go: 'Go',                 rust: 'Rust',          ruby: 'Ruby',
+  php: 'PHP',               swift: 'Swift',        kotlin: 'Kotlin',
+};
+
 function masteryColor(p) {
   if (p >= 0.95) return '#10B981';
   if (p >= 0.60) return '#6366F1';
@@ -13,10 +20,33 @@ function masteryColor(p) {
 function MiniBar({ mastery }) {
   return (
     <div className="h-1 bg-white/5 rounded-full overflow-hidden">
-      <div
-        className="h-full rounded-full mastery-bar-inner"
-        style={{ width: `${mastery * 100}%`, backgroundColor: masteryColor(mastery) }}
-      />
+      <div className="h-full rounded-full mastery-bar-inner"
+        style={{ width: `${mastery * 100}%`, backgroundColor: masteryColor(mastery) }} />
+    </div>
+  );
+}
+
+function TopicGroup({ label, topics }) {
+  if (!topics.length) return null;
+  return (
+    <div className="mb-4">
+      <p className="text-[9px] font-mono text-slate-600 uppercase tracking-widest mb-2 px-1">
+        {label}
+      </p>
+      <div className="space-y-3">
+        {topics.map(t => (
+          <div key={t.id}>
+            <div className="flex justify-between items-center mb-1">
+              <span className="text-[11px] font-mono text-slate-400 truncate pr-2">{t.name}</span>
+              <span className="text-[10px] font-mono shrink-0"
+                style={{ color: masteryColor(t.mastery) }}>
+                {Math.round(t.mastery * 100)}%
+              </span>
+            </div>
+            <MiniBar mastery={t.mastery} />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -28,13 +58,20 @@ const NAV = [
 
 export default function Sidebar() {
   const { user, logout } = useAuth();
-  const { topics } = useTopics();
-  const navigate = useNavigate();
+  const { topics }       = useTopics();
+  const navigate         = useNavigate();
 
-  const handleLogout = async () => {
-    await logout();
-    navigate('/login');
-  };
+  const handleLogout = async () => { await logout(); navigate('/login'); };
+
+  // Group topics by topic_set
+  const progTopics = topics.filter(t => t.topicSet === 'programming');
+  const dsaTopics  = topics.filter(t => t.topicSet === 'dsa');
+
+  // Build section labels from user's language selections
+  const userLanguages  = user?.languages ?? ['javascript'];
+  const progLabel      = userLanguages.map(l => LANG_LABELS[l] || l).join(' · ');
+  const dsaLangLabel   = user?.dsaLanguage ? (LANG_LABELS[user.dsaLanguage] || user.dsaLanguage) : 'Python';
+  const dsaLabel       = `DSA · ${dsaLangLabel}`;
 
   return (
     <aside className="glass-sidebar w-60 shrink-0 flex flex-col h-full z-10">
@@ -70,35 +107,18 @@ export default function Sidebar() {
               `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-mono transition-all duration-200
               ${isActive
                 ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/20'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]'
-              }`
-            }
-          >
+                : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]'}`
+            }>
             <span className="text-base leading-none">{icon}</span>
             {label}
           </NavLink>
         ))}
       </nav>
 
-      {/* Topic progress */}
+      {/* Topic progress — grouped by language */}
       <div className="flex-1 overflow-y-auto px-4 py-2">
-        <p className="text-[10px] font-mono text-slate-600 uppercase tracking-widest mb-3 px-1">
-          Progress
-        </p>
-        <div className="space-y-3">
-          {topics.map(t => (
-            <div key={t.id}>
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-[11px] font-mono text-slate-400 truncate pr-2">{t.name}</span>
-                <span className="text-[10px] font-mono shrink-0"
-                  style={{ color: masteryColor(t.mastery) }}>
-                  {Math.round(t.mastery * 100)}%
-                </span>
-              </div>
-              <MiniBar mastery={t.mastery} />
-            </div>
-          ))}
-        </div>
+        <TopicGroup label={progLabel} topics={progTopics} />
+        <TopicGroup label={dsaLabel}  topics={dsaTopics}  />
       </div>
 
       {/* User */}
