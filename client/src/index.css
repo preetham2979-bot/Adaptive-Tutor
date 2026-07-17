@@ -13,6 +13,7 @@
 @layer base {
   html, body, #root {
     height: 100%;
+    font-size: 17px;
   }
   body {
     @apply bg-abyss text-slate-200 font-sans antialiased;
