@@ -41,7 +41,7 @@ function renderQuestion(text) {
         </p>
       )}
       <pre className="bg-black/40 border border-white/[0.08] rounded-xl p-4
-        overflow-x-auto text-sm font-mono leading-relaxed whitespace-pre">
+        overflow-x-auto text-sm font-code leading-relaxed whitespace-pre">
         <code className="text-emerald-300">{code}</code>
       </pre>
     </div>

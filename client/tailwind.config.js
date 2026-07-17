@@ -11,7 +11,8 @@ export default {
       },
       fontFamily: {
         sans: ['"Apple Garamond"', 'Georgia', 'serif'],
-        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+        mono: ['"Apple Garamond"', 'Georgia', 'serif'],
+        code: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
     },
   },
