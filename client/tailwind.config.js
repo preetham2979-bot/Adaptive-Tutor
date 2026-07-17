@@ -10,8 +10,8 @@ export default {
         border:  'rgba(255,255,255,0.08)',
       },
       fontFamily: {
-        sans: ['"Apple Garamond"', 'Georgia', 'serif'],
-        mono: ['"Apple Garamond"', 'Georgia', 'serif'],
+        sans: ['Roboto', 'system-ui', 'sans-serif'],
+        mono: ['Roboto', 'system-ui', 'sans-serif'],
         code: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
     },
