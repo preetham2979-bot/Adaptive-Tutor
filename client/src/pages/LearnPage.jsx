@@ -138,9 +138,9 @@ export default function LearnPage() {
               {[1,2,3,4,5].map(n => (
                 <div key={n}
                   className={`flex-1 rounded-full transition-all duration-500
-                    ${n < currentLevel  ? 'h-1.5 bg-indigo-500/40' : ''}
-                    ${n === currentLevel ? 'h-2.5 bg-white'         : ''}
-                    ${n > currentLevel  ? 'h-1.5 bg-white/[0.08]'  : ''}`}
+                    ${n < currentLevel  ? 'h-1 bg-indigo-500/40' : ''}
+                    ${n === currentLevel ? 'h-2 bg-white'         : ''}
+                    ${n > currentLevel  ? 'h-1 bg-white/[0.08]'  : ''}`}
                 />
               ))}
             </div>
