@@ -7,8 +7,8 @@ export const config = {
   nodeEnv:      process.env.NODE_ENV    || "development",
   clientOrigin: process.env.CLIENT_ORIGIN || "http://localhost:5173",
   llmProvider:  process.env.LLM_PROVIDER  || "mock",
-  groqApiKey:   process.env.GROQ_API_KEY  || "",
-  // Email — OTP verification via Resend (resend.com, free tier).
-  // Sign up → API Keys → Create → paste the re_xxx key here.
-  resendApiKey: process.env.RESEND_API_KEY || "",
+  // LLM API keys — add as many as you have; the system tries them in order
+  groqApiKey:    process.env.GROQ_API_KEY      || "",
+  googleAiKey:   process.env.GOOGLE_AI_KEY     || "",
+  openRouterKey: process.env.OPENROUTER_API_KEY || "",
 };
