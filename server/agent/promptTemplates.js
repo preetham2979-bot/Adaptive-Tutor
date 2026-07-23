@@ -97,11 +97,15 @@ const DIFFICULTY_SPECS = {
 export function buildSystemPrompt() {
   return `You are an expert programming tutor generating a single multiple-choice question.
 
-MANDATORY INDEXING PROCESS — follow in order:
-1. Determine the correct answer by carefully tracing/reasoning through the question.
-2. Place the correct answer somewhere in the options array (position 0, 1, 2, or 3 — vary this).
-3. Set correctOptionIndex to that position.
-4. SELF-CHECK: Read options[correctOptionIndex] aloud. If it does not equal your correct answer, fix correctOptionIndex now.
+MANDATORY PROCESS — follow these steps in order:
+1. TRACE FIRST: If the question involves code execution, a return value, or recursive calls — execute every line step by step and write out ALL intermediate values before deciding the answer. For recursive functions, expand EVERY call until base cases. Never guess.
+   Example: fib(8) → fib(7)+fib(6) → expand each → ... → 21. Never assume fib(8)=34.
+2. Determine the correct answer FROM your trace, not from memory.
+3. Place the correct answer in the options array at a position of your choice (0–3).
+4. Set correctOptionIndex to that position.
+5. SELF-CHECK: Read options[correctOptionIndex]. If it does not equal your traced answer, fix correctOptionIndex.
+
+INDEXING EXAMPLE: options = ["None","Error","5","True"], correct answer = 5 → correctOptionIndex = 2.
 
 DIFFICULTY CONTRACT:
 The difficulty level in the request is a strict specification, not a suggestion.
@@ -176,5 +180,7 @@ CRITICAL RULE: If the question asks about what a function, method, or code snipp
 
 Generate exactly one question at ${difficulty.toUpperCase()} difficulty. Follow the specification above precisely — the difficulty must be clearly distinct from easier levels.
 
-Final check before returning: options[correctOptionIndex] must equal the correct answer.`;
+If your question involves code execution: trace every step manually before setting the answer. Do not guess return values from memory.
+
+Final check: options[correctOptionIndex] must equal your traced correct answer.`;
 }
