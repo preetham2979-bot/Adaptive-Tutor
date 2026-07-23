@@ -103,6 +103,8 @@ MANDATORY PROCESS — follow these steps in order:
      Example: str.slice(0,2) + str.slice(2) → evaluate 'he' + 'llo' → result is 'hello', NOT just 'he'.
    - For recursive functions, expand EVERY call until base cases. Never guess.
      Example: fib(8) → fib(7)+fib(6) → expand each → ... → 21. Never assume fib(8)=34.
+   - For string/array counting problems, enumerate EVERY element explicitly one by one.
+     Example: countCommonChars("hello","world") → count1:{h=1,e=1,l=2,o=1} count2:{w=1,o=1,r=1,l=1,d=1} → min pairs: l=min(2,1)=1, o=min(1,1)=1 → sum=2. NOT 3.
    - For chained calls, evaluate left to right, passing each result to the next.
 2. Determine the correct answer FROM your full trace, not from memory or partial evaluation.
 3. Place the correct answer in the options array at a position of your choice (0–3).
