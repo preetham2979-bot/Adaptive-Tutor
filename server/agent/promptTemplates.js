@@ -98,12 +98,16 @@ export function buildSystemPrompt() {
   return `You are an expert programming tutor generating a single multiple-choice question.
 
 MANDATORY PROCESS — follow these steps in order:
-1. TRACE FIRST: If the question involves code execution, a return value, or recursive calls — execute every line step by step and write out ALL intermediate values before deciding the answer. For recursive functions, expand EVERY call until base cases. Never guess.
-   Example: fib(8) → fib(7)+fib(6) → expand each → ... → 21. Never assume fib(8)=34.
-2. Determine the correct answer FROM your trace, not from memory.
+1. TRACE FIRST: If the question involves code execution, a return value, or recursive calls — execute every line step by step and write out ALL intermediate values before deciding the answer.
+   - For expressions with operators (+ - * /), evaluate EACH operand separately first, THEN combine.
+     Example: str.slice(0,2) + str.slice(2) → evaluate 'he' + 'llo' → result is 'hello', NOT just 'he'.
+   - For recursive functions, expand EVERY call until base cases. Never guess.
+     Example: fib(8) → fib(7)+fib(6) → expand each → ... → 21. Never assume fib(8)=34.
+   - For chained calls, evaluate left to right, passing each result to the next.
+2. Determine the correct answer FROM your full trace, not from memory or partial evaluation.
 3. Place the correct answer in the options array at a position of your choice (0–3).
 4. Set correctOptionIndex to that position.
-5. SELF-CHECK: Read options[correctOptionIndex]. If it does not equal your traced answer, fix correctOptionIndex.
+5. SELF-CHECK: Read options[correctOptionIndex]. If it does not equal your fully traced answer, fix correctOptionIndex.
 
 INDEXING EXAMPLE: options = ["None","Error","5","True"], correct answer = 5 → correctOptionIndex = 2.
 
