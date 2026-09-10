@@ -2,7 +2,8 @@ import { Router } from "express";
 import db from "../db/connection.js";
 import { requireAuth } from "../middleware/requireAuth.js";
 import { asyncHandler } from "../middleware/asyncHandler.js";
-import { updateMastery, isMastered } from "../bkt/bktEngine.js";
+import { isMastered } from "../bkt/bktEngine.js";
+import { computeMasteryUpdate } from "../services/masteryUpdater.js";
 import { selectNextTopic } from "../services/topicSelector.js";
 import { getDifficultyForLevel, getLevelConfig, MAX_LEVEL, LEVEL_STREAK_THRESHOLD } from "../services/levels.js";
 import { generateQuestion } from "../agent/generateQuestion.js";
@@ -166,11 +167,9 @@ router.post("/answer", requireAuth, (req, res) => {
   const correct        = selectedOptionIndex === active.correct_option_index;
   const pMasteryBefore = masteryRow.p_mastery;
 
-  // Simple fixed-delta mastery: +5% for correct, -5% for wrong, clamped 0–100%
-  const DELTA = 0.05;
-  const pMasteryAfter = correct
-    ? Math.min(1, pMasteryBefore + DELTA)
-    : Math.max(0, pMasteryBefore - DELTA);
+  // Real BKT update — uses this topic's own p_transit/p_guess/p_slip
+  // (seeded per-topic in server/bkt/topics.js), not a fixed delta.
+  const pMasteryAfter = computeMasteryUpdate(topic, pMasteryBefore, correct);
 
   // Update mastery
   db.prepare(`

@@ -1,12 +1,18 @@
 # Adaptive Tutor — Knowledge Tracing Agent
 
 A web app that tracks per-topic student mastery using **Bayesian Knowledge
-Tracing (BKT)** — a small, explainable probabilistic model — and uses a
-Claude API agent (Haiku) purely to generate question/hint/explanation
-*text* once BKT has decided what topic and difficulty come next.
+Tracing (BKT)** — a small, explainable probabilistic model — and uses an
+LLM agent (Llama 3.3 70B via Groq's free tier, with Google AI / OpenRouter
+fallbacks) purely to generate question/hint/explanation *text* once BKT
+has decided what topic and difficulty come next.
 
-**The split is intentional:** BKT makes the decision, Claude generates the
-language. Nothing in `server/bkt/` knows that Claude exists.
+**The split is intentional:** BKT makes the decision, the LLM generates the
+language. Nothing in `server/bkt/` knows an LLM exists.
+
+> Earlier versions of this README referenced Claude/Haiku, which is what
+> the project used during early development before switching providers
+> for free-tier rate limits. The architecture and division of labor are
+> unchanged — only the text-generation backend swapped out.
 
 ## Phase 1 — BKT engine (this phase)
 
@@ -173,9 +179,52 @@ ANTHROPIC_API_KEY=sk-ant-...
 
 No code changes needed — `generateQuestion()` picks it up automatically.
 
+## Phase 5 — Evaluation
+
+The strongest evidence that BKT is doing real work: a synthetic-student
+simulation that scores it against a naive "rolling percent-correct"
+baseline — the tracker most simple quiz apps actually ship.
+
+```bash
+npm run evaluate
+```
+
+This simulates 100 synthetic students answering 40 questions each. Each
+student has a hidden "true mastery" that itself evolves over time,
+including one deliberate "learning moment" partway through the sequence
+(simulating a student who actually studied). Both trackers watch the
+same noisy answer stream; we then measure how closely each one's belief
+matches the hidden ground truth.
+
+```
+Metric                              BKT        Naive (rolling %)
+-----------------------------------------------------------------
+Mean Absolute Error (overall)        21.44%     26.76%
+Mean Absolute Error (after learning)  19.95%     32.82%
+Avg. questions to detect ability jump 5.7        21.9
+-----------------------------------------------------------------
+BKT is 19.9% more accurate overall than the naive baseline.
+BKT detects a real ability change 16.2 questions faster on average.
+```
+
+(Numbers are reproducible — the simulation uses a seeded PRNG.)
+
+![Calibration chart](server/evaluation/calibration.svg)
+
+The chart shows one student's trace: true hidden mastery (white), BKT's
+estimate (indigo), and the naive baseline (dashed rose). BKT snaps to the
+post-learning-moment true mastery in a handful of questions; the naive
+tracker drags for a long stretch because it can't distinguish "genuinely
+got better" from "got lucky a few times in a row."
+
+Run `npm run evaluate` again any time — it regenerates
+`server/evaluation/results.csv` (raw per-step trace) and
+`server/evaluation/calibration.svg`.
+
 ## Status
 
 - [x] Phase 1 — BKT engine (pure math, fully tested)
 - [x] Phase 2 — Backend: Express + SQLite + auth + topic routing
-- [x] Phase 3 — Claude agent (mocked by default, real calls behind `CLAUDE_MODE=live`)
-- [ ] Phase 4 — React frontend
+- [x] Phase 3 — LLM agent (mocked by default, real calls behind `LLM_PROVIDER=groq`)
+- [x] Phase 4 — React frontend (dark-mode quiz UI, mastery dashboard, activity heatmap)
+- [x] Phase 5 — Evaluation (synthetic-student simulation vs. naive baseline, see above)

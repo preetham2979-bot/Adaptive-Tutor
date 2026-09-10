@@ -1,0 +1,29 @@
+<svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg" font-family="monospace">
+  <rect width="760" height="380" fill="#050810" />
+  
+    <line x1="50" y1="340" x2="740" y2="340" stroke="#1e293b" stroke-width="1" />
+    <text x="42" y="344" font-size="11" fill="#64748b" text-anchor="end" font-family="monospace">0%</text>
+    <line x1="50" y1="260" x2="740" y2="260" stroke="#1e293b" stroke-width="1" />
+    <text x="42" y="264" font-size="11" fill="#64748b" text-anchor="end" font-family="monospace">25%</text>
+    <line x1="50" y1="180" x2="740" y2="180" stroke="#1e293b" stroke-width="1" />
+    <text x="42" y="184" font-size="11" fill="#64748b" text-anchor="end" font-family="monospace">50%</text>
+    <line x1="50" y1="100" x2="740" y2="100" stroke="#1e293b" stroke-width="1" />
+    <text x="42" y="104" font-size="11" fill="#64748b" text-anchor="end" font-family="monospace">75%</text>
+    <line x1="50" y1="20" x2="740" y2="20" stroke="#1e293b" stroke-width="1" />
+    <text x="42" y="24" font-size="11" fill="#64748b" text-anchor="end" font-family="monospace">100%</text>
+  <line x1="350.8" y1="20" x2="350.8" y2="340"
+        stroke="#f59e0b" stroke-width="1" stroke-dasharray="4,3" />
+  <text x="350.84" y="32" font-size="10" fill="#f59e0b">learning moment</text>
+
+  <path d="M50.0,278.9 L67.7,277.3 L85.4,280.4 L103.1,280.1 L120.8,282.3 L138.5,281.1 L156.2,277.6 L173.8,277.9 L191.5,280.3 L209.2,276.6 L226.9,274.3 L244.6,276.1 L262.3,279.0 L280.0,279.0 L297.7,277.2 L315.4,276.2 L333.1,280.9 L350.8,75.7 L368.5,72.5 L386.2,76.8 L403.8,75.9 L421.5,80.4 L439.2,82.6 L456.9,86.8 L474.6,89.9 L492.3,87.1 L510.0,86.9 L527.7,91.4 L545.4,94.5 L563.1,91.2 L580.8,91.4 L598.5,88.4 L616.2,90.1 L633.8,90.6 L651.5,95.0 L669.2,99.4 L686.9,98.8 L704.6,97.9 L722.3,100.3 L740.0,98.9" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.9" />
+  <path d="M50.0,293.1 L67.7,295.7 L85.4,296.1 L103.1,296.1 L120.8,184.2 L138.5,271.7 L156.2,146.8 L173.8,256.6 L191.5,128.8 L209.2,246.6 L226.9,287.8 L244.6,294.9 L262.3,182.0 L280.0,271.0 L297.7,145.9 L315.4,256.1 L333.1,128.3 L350.8,48.8 L368.5,26.0 L386.2,21.2 L403.8,20.2 L421.5,20.0 L439.2,20.3 L456.9,22.3 L474.6,20.4 L492.3,20.1 L510.0,20.0 L527.7,20.1 L545.4,20.0 L563.1,20.0 L580.8,20.0 L598.5,20.0 L616.2,20.0 L633.8,20.0 L651.5,20.0 L669.2,20.0 L686.9,20.0 L704.6,20.0 L722.3,20.0 L740.0,20.0" fill="none" stroke="#6366f1" stroke-width="2" />
+  <path d="M50.0,340.0 L67.7,340.0 L85.4,340.0 L103.1,340.0 L120.8,276.0 L138.5,286.7 L156.2,248.6 L173.8,260.0 L191.5,233.3 L209.2,244.0 L226.9,252.7 L244.6,260.0 L262.3,241.5 L280.0,248.6 L297.7,233.3 L315.4,240.0 L333.1,227.1 L350.8,215.6 L368.5,205.3 L386.2,196.0 L403.8,187.6 L421.5,180.0 L439.2,187.0 L456.9,193.3 L474.6,186.4 L492.3,180.0 L510.0,174.1 L527.7,180.0 L545.4,174.5 L563.1,169.3 L580.8,164.5 L598.5,160.0 L616.2,155.8 L633.8,151.8 L651.5,148.0 L669.2,144.4 L686.9,141.1 L704.6,137.9 L722.3,143.1 L740.0,140.0" fill="none" stroke="#f43f5e" stroke-width="2" stroke-dasharray="3,3" />
+
+  <text x="50" y="368" font-size="11" fill="#94a3b8">Question number →</text>
+
+  <g transform="translate(50, 372)">
+    <circle cx="0" cy="-4" r="4" fill="#ffffff" /><text x="10" y="0" font-size="11" fill="#e2e8f0">True mastery</text>
+    <circle cx="140" cy="-4" r="4" fill="#6366f1" /><text x="150" y="0" font-size="11" fill="#e2e8f0">BKT estimate</text>
+    <circle cx="290" cy="-4" r="4" fill="#f43f5e" /><text x="300" y="0" font-size="11" fill="#e2e8f0">Naive (rolling %)</text>
+  </g>
+</svg>
